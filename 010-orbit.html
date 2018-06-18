@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>010 - orbit</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+    <script src="three.js"></script>
+    <script src="OrbitControls.js"></script>
+	<script>
+
+		var scene, camera, renderer;
+        var controls;
+		var cube1, cube2;
+
+		init();
+		animate();
+
+		function init()
+		{
+			scene = new THREE.Scene();
+
+			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 500);
+			camera.position.set(0, 0, 15);
+			camera.lookAt(0, 0, 0);
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+			
+			// setup vars for the hemisphere light
+			// the colors have to be different to show dimension
+			// the colors affect the color of the material, too!
+			var skyColor = 0xcbf2d1;
+			var groundColor = 0x516d55;
+			var intensity = 1;
+
+			// create and add the light
+			var hemiLight = new THREE.HemisphereLight(skyColor, groundColor, intensity);
+			hemiLight.position.set(0, 50, 0);
+			scene.add(hemiLight);
+
+			// create the cube geometry
+			var cube1Geom = new THREE.BoxGeometry(3, 3, 3);
+			var cube2Geom = new THREE.BoxGeometry(1, 1, 1);
+
+			// create a Phong mesh: this type of mesh can show shiny surfaces (i.e., not just flat objects)
+			var material = new THREE.MeshPhongMaterial({
+				color: 0xf28b4b,
+				specular: 0xffffff,
+				shininess: 20,
+				morphTargets: true,
+				vertexColors: THREE.FaceColors,
+				flatShading: true
+			});
+
+			// create the meshes and position them
+			cube1 = new THREE.Mesh(cube1Geom, material);
+			cube1.position.set(-10, 0, 0);
+			cube1.rotation.x = 0.5;
+			cube1.rotation.y = 0.5;
+			scene.add(cube1);
+
+			cube2 = new THREE.Mesh(cube2Geom, material);
+			cube2.position.set(10, 0, 0);
+			cube2.rotation.x = 0.25;
+			cube2.rotation.y = 0.25;
+			scene.add(cube2);
+
+            // create the controls
+            controls = new THREE.OrbitControls(camera);
+		}
+
+		function animate()
+		{
+			requestAnimationFrame(animate);
+
+			// another way to rotate
+			cube1.rotateX(0.05);
+			cube2.rotateY(0.05);
+
+            // update them if controls.enableDamping or controls.autoRotate are set to true
+            //controls.update();
+
+			renderer.render(scene, camera);
+		}
+
+	</script>
+</body>
+</html>
