@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>006 - organization</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display: block;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            color: #21ef7e;
+        }
+	</style>
+</head>
+<body>
+    <div id="info">
+        <p>Now our code is organized!</p>
+    </div>
+	<script src="three.js"></script>
+	<script>
+
+        // https://threejs.org/docs/#manual/introduction/Creating-text
+
+        var scene, camera, renderer;
+        var cube;
+
+        init();
+        animate();
+
+        function init()
+        {
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+            camera.position.set(0, 0, 10);
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0xf9f8ea, 1); // change background color/alpha
+            document.body.appendChild(renderer.domElement);
+
+            var geometry = new THREE.BoxGeometry(2, 2, 3);
+            var material = new THREE.MeshBasicMaterial({ color: 0x21ef7e });
+            cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+        }
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            cube.rotation.x += 0.01;
+
+            renderer.render(scene, camera);
+        }
+
+	</script>
+</body>
+</html>
