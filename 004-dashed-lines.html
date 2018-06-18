@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>004 - dashed lines</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+	<script src="three.js"></script>
+	<script>
+
+        var scene = new THREE.Scene();
+        
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+        camera.position.set(0, 0, 100);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // create a blue basic line material
+        var material = new THREE.LineDashedMaterial({
+            color: 0x0000ff,
+            dashSize: 3,
+            gapSize: 2
+        });
+
+        // create a basic geometry
+        var geometry = new THREE.Geometry();
+
+        // make a squiggly line
+        for (var x = -50; x < 60; x += 10)
+        {
+            // alternate between 1 and -1
+            var flip = (x / 10) % 2 == 0 ? - 1 : 1;
+
+            // add a new point
+            geometry.vertices.push(new THREE.Vector3(x, 10 * flip, 10));
+        }
+
+        // form the line
+        var line = new THREE.Line(geometry, material);
+
+        // call this to use the dashed line material
+        line.computeLineDistances();
+
+        // add it to the scene
+        scene.add(line);
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+
+            line.rotation.x += 0.025;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+	</script>
+</body>
+</html>

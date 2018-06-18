@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>001 - Cube</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+	<script src="three.js"></script>
+	<script>
+		// https://threejs.org/docs/#manual/introduction/Creating-a-scene
+
+		// create the scene
+		var scene = new THREE.Scene();
+
+		// field of view (in degrees), aspect ration (w/h), near clipping pane, far clipping pane
+		var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+		// create renderer instance
+		var renderer = new THREE.WebGLRenderer();
+
+		// set size for renderer
+		// optional 3rd argument is updateStyle
+		renderer.setSize(window.innerWidth, window.innerHeight);
+
+		// add the renderer element to html (canvas)
+		document.body.appendChild(renderer.domElement);
+
+
+		// create the cube: vertices & fills
+		var geometry = new THREE.BoxGeometry(1, 1, 1);
+
+		// basic green material
+		var material = new THREE.MeshBasicMaterial({color: 0x00ff00 });
+
+		// create the mesh: apply material to geometry
+		var cube = new THREE.Mesh(geometry, material);
+		scene.add(cube);
+
+		// move the camera b/c the cube gets added to (0, 0, 0)
+		camera.position.z = 5;
+
+		function animate()
+		{
+			requestAnimationFrame(animate);
+
+			cube.rotation.x += 0.01;
+			cube.rotation.y += 0.01;
+
+			renderer.render(scene, camera);
+		}
+		animate();
+	</script>
+</body>
+</html>

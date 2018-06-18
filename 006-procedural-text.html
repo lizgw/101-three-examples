@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>006 - procedural text</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+    <script src="three.js"></script>
+	<script>
+
+        // https://threejs.org/docs/#manual/introduction/Creating-text
+		
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera();
+        camera.position.set(0, 0, 50);
+        camera.lookAt(0, 0, 0);
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xf9f8ea, 1);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        var loader = new THREE.FontLoader();
+        var mesh;
+        var textFont = loader.load(
+            "helvetiker_regular.typeface.json",
+
+            // onload callback
+            function(font) {
+                var textGeom = new THREE.TextGeometry("this is super cool", {
+                    font: font,
+                    size: 2,
+                    height: 1,
+                    curveSegments: 5,
+                    bevelEnabled: false
+                });
+                textGeom.computeBoundingBox();
+                textGeom.center();
+
+                var material = new THREE.MeshBasicMaterial({color: 0x21efe5});
+                mesh = new THREE.Mesh(textGeom, material);
+                scene.add(mesh);
+            },
+
+            // onprogress callback
+            function(xhr)
+            {
+                console.log((xhr.loaded / xhr.total * 100) + "% progress ");
+            },
+
+            // onerror callback
+            function(err)
+            {
+                console.log("font error???" + err);
+            }
+        );
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+
+            if (mesh)
+            {
+                mesh.rotation.x += 0.025;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+	</script>
+</body>
+</html>
