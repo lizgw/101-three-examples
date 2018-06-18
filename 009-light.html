@@ -43,10 +43,6 @@
 			var hemiLight = new THREE.HemisphereLight(skyColor, groundColor, intensity);
 			hemiLight.position.set(0, 50, 0);
 			scene.add(hemiLight);
-			
-			// add a helper to display the light
-			var hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
-			scene.add(hemiLightHelper);
 
 			// create the cube geometry
 			var cube1Geom = new THREE.BoxGeometry(3, 3, 3);
