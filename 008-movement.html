@@ -15,7 +15,7 @@
 	<script>
 		
         var scene, camera, renderer;
-        var cube;
+        var cube, moveAmount;
 
         init();
         animate();
@@ -36,16 +36,20 @@
             var geom = new THREE.BoxGeometry(4, 4, 4);
             var material = new THREE.MeshBasicMaterial({color: 0xef4e21});
             cube = new THREE.Mesh(geom, material);
+
+            // set some static rotation
+            cube.rotation.x = 0.5;
+            cube.rotation.y = 0.25;
             scene.add(cube);
+
+            // set the cube's move speed
+            moveAmount = 0.1;
         }
 
         function animate()
         {
             requestAnimationFrame(animate);
 
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-            cube.rotation.z += 0.01;
             moveCube();
 
             renderer.render(scene, camera);
@@ -53,17 +57,12 @@
 
         function moveCube()
         {
-            var moveAmount = 0.025;
-            var distRight = Math.abs(10 - cube.position.x);
-            var distLeft = Math.abs(-10 - cube.position.x);
+            // move it moveAmount pixels per frame
+            cube.translateX(moveAmount);
 
-            if (distLeft < .2 || distRight < .2) // TODO
-            {
+            // if it goes too far left or right, reverse the movement direction
+            if (cube.position.x >= 5 || cube.position.x <= -5)
                 moveAmount *= -1;
-                console.log(distRight + " " + cube.position.x);
-            }
-            else
-                cube.position.x += moveAmount;
         }
 
 	</script>
