@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>012 - light 02: point</title>
+	<title>013 - light 03: point</title>
 
 	<style>
 		body { margin: 0; }
@@ -43,15 +43,34 @@
             pointLight.lookAt(0, 0, 0);
             scene.add(pointLight);
 
-            // a "debug" representation of the light
+            // create the helper object
             var pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
-            scene.add(pointLightHelper);
+			scene.add(pointLightHelper);
+			
+			addCubes();
+			addPlane();
 
+			// add controls
+			controls = new THREE.OrbitControls(camera);
+		}
+
+		function animate()
+		{
+			requestAnimationFrame(animate);
+
+			cube1.rotateX(0.05);
+			cube2.rotateY(0.05);
+
+			renderer.render(scene, camera);
+		}
+
+		function addCubes()
+		{
 			// create the cube geometry
-			var cube1Geom = new THREE.BoxGeometry(3, 3, 3);
-			var cube2Geom = new THREE.BoxGeometry(1, 1, 1);
+			var cube1Geom = new THREE.BoxGeometry(6, 6, 6);
+			var cube2Geom = new THREE.BoxGeometry(3, 3, 3);
 
-			// create a Phong mesh: this type of mesh can show shiny surfaces (i.e., not just flat objects)
+			// create a Phong material
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xf28b4b,
 				specular: 0xffffff,
@@ -73,9 +92,12 @@
 			cube2.rotation.x = 0.25;
 			cube2.rotation.y = 0.25;
 			scene.add(cube2);
+		}
 
-            // create the plane geometry
-            var planeGeom = new THREE.PlaneGeometry(30, 30);
+		function addPlane()
+		{
+			// create the plane geometry
+            var planeGeom = new THREE.PlaneGeometry(50, 50);
 
 			// make the basic material
             var planeMat = new THREE.MeshBasicMaterial({
@@ -87,19 +109,6 @@
             var plane = new THREE.Mesh(planeGeom, planeMat);
             plane.rotation.x = Math.PI/2;
             scene.add(plane);
-
-			// add controls
-			controls = new THREE.OrbitControls(camera);
-		}
-
-		function animate()
-		{
-			requestAnimationFrame(animate);
-
-			cube1.rotateX(0.05);
-			cube2.rotateY(0.05);
-
-			renderer.render(scene, camera);
 		}
 
 	</script>

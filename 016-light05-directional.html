@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>016 - light 05: directional</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+	<script src="three.js"></script>
+	<script src="OrbitControls.js"></script>
+	<script>
+
+        // https://threejs.org/docs/index.html#api/lights/DirectionalLight
+
+		var scene, camera, renderer;
+		var controls;
+		var cube1, cube2;
+        var lightTarget, lightSpeed;
+
+		init();
+		animate();
+
+		function init()
+		{
+			scene = new THREE.Scene();
+
+			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 500);
+			camera.position.set(0, 15, 30);
+			camera.lookAt(0, 0, 0);
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+            // create an ambient light for some basic lighting
+			var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+			scene.add(ambientLight);
+
+            // add a directional light: normally used to simulate daylight
+            // color, intensity
+            var dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            scene.add(dirLight);
+
+            // create an object to act as the target for the light
+            lightTarget = new THREE.Object3D();
+            scene.add(lightTarget);
+            dirLight.target = lightTarget;
+            lightSpeed = 0.025;
+
+            // directional light helper for debug
+            var dirLightHelper = new THREE.DirectionalLightHelper(dirLight);
+            scene.add(dirLightHelper);
+
+			addCubes();
+            addPlane();
+
+			// add controls
+			controls = new THREE.OrbitControls(camera);
+		}
+
+		function animate()
+		{
+			requestAnimationFrame(animate);
+
+			cube1.rotateX(0.05);
+			cube2.rotateY(0.05);
+
+            // move the light target back and forth
+            lightTarget.translateX(lightSpeed);
+            if (lightTarget.position.x <= -2.5 || lightTarget.position.x >= 2.5)
+                lightSpeed *= -1;
+
+			renderer.render(scene, camera);
+		}
+
+		function addCubes()
+		{
+			// create the cube geometry
+			var cube1Geom = new THREE.BoxGeometry(6, 6, 6);
+			var cube2Geom = new THREE.BoxGeometry(3, 3, 3);
+
+			var material = new THREE.MeshPhongMaterial({
+				color: 0xf28b4b,
+				specular: 0xffffff,
+				shininess: 10,
+				morphTargets: true,
+				vertexColors: THREE.FaceColors,
+				flatShading: true
+			});
+
+			// create the meshes and position them
+			cube1 = new THREE.Mesh(cube1Geom, material);
+			cube1.position.set(-10, 5, 0);
+			cube1.rotation.x = 0.5;
+			cube1.rotation.y = 0.5;
+			scene.add(cube1);
+
+			cube2 = new THREE.Mesh(cube2Geom, material);
+			cube2.position.set(10, 5, 0);
+			cube2.rotation.x = 0.25;
+			cube2.rotation.y = 0.25;
+			scene.add(cube2);
+		}
+
+		function addPlane()
+		{
+            var planeGeom = new THREE.PlaneGeometry(50, 50);
+
+            var planeMat = new THREE.MeshPhongMaterial({
+				color: 0xd1cbf2,
+                specular: 0xffffff,
+				shininess: 20,
+				morphTargets: true,
+				vertexColors: THREE.FaceColors,
+				flatShading: true,
+				side: THREE.DoubleSide // make sure the plane draws both sides
+			});
+
+			// create, transform, and add the plane mesh
+            var plane = new THREE.Mesh(planeGeom, planeMat);
+            plane.rotation.x = Math.PI/2;
+            scene.add(plane);
+		}
+
+	</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>014 - light 04: directional</title>
+	<title>011 - light 01: ambient</title>
 
 	<style>
 		body { margin: 0; }
@@ -15,12 +15,11 @@
 	<script src="OrbitControls.js"></script>
 	<script>
 
-        // https://threejs.org/docs/index.html#api/lights/DirectionalLight
+        // https://threejs.org/docs/index.html#api/lights/AmbientLight
 
 		var scene, camera, renderer;
 		var controls;
 		var cube1, cube2;
-        var lightTarget, lightSpeed;
 
 		init();
 		animate();
@@ -37,38 +36,20 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.body.appendChild(renderer.domElement);
 
-            var skyColor = 0xcbf2d1;
-			var groundColor = 0x516d55;
-			var intensity = 0.25;
-			// create and add a hemilight
-			var hemiLight = new THREE.HemisphereLight(skyColor, groundColor, intensity);
-			hemiLight.position.set(0, 50, 0);
-			scene.add(hemiLight);
-
-            // add a directional light: normally used to simulate daylight
-            // color, intensity
-            var dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            scene.add(dirLight);
-
-            // create an object to act as the target for the light
-            lightTarget = new THREE.Object3D();
-            scene.add(lightTarget);
-            dirLight.target = lightTarget;
-            lightSpeed = 0.05;
-
-            // directional light helper for debug
-            var dirLightHelper = new THREE.DirectionalLightHelper(dirLight);
-            scene.add(dirLightHelper);
+            // create an ambient light: this type won't cast shadows
+            var ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+            scene.add(ambientLight);
 
 			// create the cube geometry
-			var cube1Geom = new THREE.BoxGeometry(3, 3, 3);
-			var cube2Geom = new THREE.BoxGeometry(1, 1, 1);
+			var cube1Geom = new THREE.BoxGeometry(6, 6, 6);
+			var cube2Geom = new THREE.BoxGeometry(3, 3, 3);
 
-			// create a Phong mesh: this type of mesh can show shiny surfaces (i.e., not just flat objects)
+			// create a Phong material for the cubes
+            // this type of material can show shiny surfaces (i.e., not just flat objects)
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xf28b4b,
 				specular: 0xffffff,
-				shininess: 10,
+				shininess: 20,
 				morphTargets: true,
 				vertexColors: THREE.FaceColors,
 				flatShading: true
@@ -88,22 +69,20 @@
 			scene.add(cube2);
 
             // create the plane geometry
-            var planeGeom = new THREE.PlaneGeometry(100, 100);
+            var planeGeom = new THREE.PlaneGeometry(50, 50);
 
-			// make the basic material
+			// make the plane material
             var planeMat = new THREE.MeshPhongMaterial({
 				color: 0xd1cbf2,
                 specular: 0xffffff,
-				shininess: 20,
-				morphTargets: true,
-				vertexColors: THREE.FaceColors,
+				shininess: 10,
 				flatShading: true,
 				side: THREE.DoubleSide // make sure the plane draws both sides
 			});
 
 			// create, transform, and add the plane mesh
             var plane = new THREE.Mesh(planeGeom, planeMat);
-            plane.rotation.x = Math.PI/2;
+            plane.rotation.x = Math.PI/2; // make it flat
             scene.add(plane);
 
 			// add controls
@@ -116,11 +95,6 @@
 
 			cube1.rotateX(0.05);
 			cube2.rotateY(0.05);
-
-            // move the light target back and forth
-            lightTarget.translateX(lightSpeed);
-            if (lightTarget.position.x <= -5 || lightTarget.position.x >= 5)
-                lightSpeed *= -1;
 
 			renderer.render(scene, camera);
 		}

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>011 - plane</title>
+	<title>010 - plane</title>
 
 	<style>
 		body { margin: 0; }
@@ -33,32 +33,13 @@
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.body.appendChild(renderer.domElement);
-			
-			// setup vars for the hemisphere light
-			// the colors have to be different to show dimension
-			// the colors affect the color of the material, too!
-			var skyColor = 0xcbf2d1;
-			var groundColor = 0x516d55;
-			var intensity = 1;
-
-			// create and add the light
-			var hemiLight = new THREE.HemisphereLight(skyColor, groundColor, intensity);
-			hemiLight.position.set(0, 50, 0);
-			scene.add(hemiLight);
 
 			// create the cube geometry
-			var cube1Geom = new THREE.BoxGeometry(3, 3, 3);
-			var cube2Geom = new THREE.BoxGeometry(1, 1, 1);
+			var cube1Geom = new THREE.BoxGeometry(6, 6, 6);
+			var cube2Geom = new THREE.BoxGeometry(3, 3, 3);
 
-			// create a Phong mesh: this type of mesh can show shiny surfaces (i.e., not just flat objects)
-			var material = new THREE.MeshPhongMaterial({
-				color: 0xf28b4b,
-				specular: 0xffffff,
-				shininess: 20,
-				morphTargets: true,
-				vertexColors: THREE.FaceColors,
-				flatShading: true
-			});
+			// create a basic material
+			var material = new THREE.MeshBasicMaterial({ color: 0xf28b4b });
 
 			// create the meshes and position them
 			cube1 = new THREE.Mesh(cube1Geom, material);
@@ -74,7 +55,7 @@
 			scene.add(cube2);
 
             // create the plane geometry
-            var planeGeom = new THREE.PlaneGeometry(30, 30);
+            var planeGeom = new THREE.PlaneGeometry(50, 50);
 
 			// make the basic material
             var planeMat = new THREE.MeshBasicMaterial({
