@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>015 - light 04: spot</title>
+	<title>015 - shadows</title>
 
 	<style>
 		body { margin: 0; }
@@ -15,7 +15,7 @@
 	<script src="OrbitControls.js"></script>
 	<script>
 
-        // https://threejs.org/docs/index.html#api/lights/SpotLight
+        // https://threejs.org/docs/index.html#api/lights/PointLight
 
 		var scene, camera, renderer;
 		var controls;
@@ -34,26 +34,39 @@
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
-			document.body.appendChild(renderer.domElement);
+            document.body.appendChild(renderer.domElement);
+            
+            // turn on renderer shadows
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-			// create an ambient light for some basic lighting
+            // create an ambient light for some basic lighting
 			var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
 			scene.add(ambientLight);
 
             // create a spotlight
             // color, intensity, distance, angle...
             var spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI/12);
-            spotlight.position.set(30, 50, 30);
+			spotlight.position.set(30, 50, 30);
+			
+			// tell the light to cast shadows
+			spotlight.castShadow = true;
+			spotlight.shadow.camera.near = 5;
+			spotlight.shadow.camera.far = 100;
+
             scene.add(spotlight);
 
             // add the helper
             var spotlightHelper = new THREE.SpotLightHelper(spotlight);
-            scene.add(spotlightHelper);
-
+			scene.add(spotlightHelper);
+			
+			// add a shadow helper
+			var shadowHelper = new THREE.CameraHelper(spotlight.shadow.camera);
+			scene.add(shadowHelper);
+			
 			addCubes();
 			addPlane();
 
-			// add controls
 			controls = new THREE.OrbitControls(camera);
 		}
 
@@ -77,7 +90,7 @@
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xf28b4b,
 				specular: 0xffffff,
-				shininess: 10,
+				shininess: 20,
 				morphTargets: true,
 				vertexColors: THREE.FaceColors,
 				flatShading: true
@@ -88,32 +101,38 @@
 			cube1.position.set(-10, 5, 0);
 			cube1.rotation.x = 0.5;
 			cube1.rotation.y = 0.5;
-			scene.add(cube1);
 
 			cube2 = new THREE.Mesh(cube2Geom, material);
 			cube2.position.set(10, 5, 0);
 			cube2.rotation.x = 0.25;
-			cube2.rotation.y = 0.25;
-			scene.add(cube2);
+            cube2.rotation.y = 0.25;
+            
+            // tell the cubes to cast shadows
+            cube1.castShadow = true;
+            cube2.castShadow = true;
+
+            scene.add(cube1);
+            scene.add(cube2);
 		}
 
 		function addPlane()
 		{
-            var planeGeom = new THREE.PlaneGeometry(100, 100);
+			// create the plane geometry
+            var planeGeom = new THREE.PlaneGeometry(50, 50);
 
-            var planeMat = new THREE.MeshPhongMaterial({
+			// make the basic material
+            var planeMat = new THREE.MeshBasicMaterial({
 				color: 0xd1cbf2,
-                specular: 0xffffff,
-				shininess: 20,
-				morphTargets: true,
-				vertexColors: THREE.FaceColors,
-				flatShading: true,
 				side: THREE.DoubleSide // make sure the plane draws both sides
 			});
 
 			// create, transform, and add the plane mesh
             var plane = new THREE.Mesh(planeGeom, planeMat);
             plane.rotation.x = Math.PI/2;
+
+            // tell the plane to recieve shadows
+            plane.receiveShadow = true;
+
             scene.add(plane);
 		}
 
