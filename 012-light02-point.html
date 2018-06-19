@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>013 - lights 3</title>
+	<title>012 - light 02: point</title>
 
 	<style>
 		body { margin: 0; }
@@ -36,23 +36,16 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.body.appendChild(renderer.domElement);
 
-            var skyColor = 0xcbf2d1;
-			var groundColor = 0x516d55;
-			var intensity = 0.25;
-			// create and add a hemilight
-			var hemiLight = new THREE.HemisphereLight(skyColor, groundColor, intensity);
-			hemiLight.position.set(0, 50, 0);
-			scene.add(hemiLight);
+            // create a point light
+            // color, intensity, distance, decay
+            var pointLight = new THREE.PointLight(0xffffff, 1, 100, 1);
+            pointLight.position.set(10, 10, 10);
+            pointLight.lookAt(0, 0, 0);
+            scene.add(pointLight);
 
-            // create a spotlight
-            // color, intensity, distance, angle...
-            var spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI/12);
-            spotlight.position.set(30, 50, 30);
-            scene.add(spotlight);
-
-            // spotlight "debug"
-            var spotlightHelper = new THREE.SpotLightHelper(spotlight);
-            scene.add(spotlightHelper);
+            // a "debug" representation of the light
+            var pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
+            scene.add(pointLightHelper);
 
 			// create the cube geometry
 			var cube1Geom = new THREE.BoxGeometry(3, 3, 3);
@@ -62,7 +55,7 @@
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xf28b4b,
 				specular: 0xffffff,
-				shininess: 10,
+				shininess: 20,
 				morphTargets: true,
 				vertexColors: THREE.FaceColors,
 				flatShading: true
@@ -82,16 +75,11 @@
 			scene.add(cube2);
 
             // create the plane geometry
-            var planeGeom = new THREE.PlaneGeometry(100, 100);
+            var planeGeom = new THREE.PlaneGeometry(30, 30);
 
 			// make the basic material
-            var planeMat = new THREE.MeshPhongMaterial({
+            var planeMat = new THREE.MeshBasicMaterial({
 				color: 0xd1cbf2,
-                specular: 0xffffff,
-				shininess: 20,
-				morphTargets: true,
-				vertexColors: THREE.FaceColors,
-				flatShading: true,
 				side: THREE.DoubleSide // make sure the plane draws both sides
 			});
 
