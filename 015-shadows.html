@@ -15,8 +15,6 @@
 	<script src="OrbitControls.js"></script>
 	<script>
 
-        // https://threejs.org/docs/index.html#api/lights/PointLight
-
 		var scene, camera, renderer;
 		var controls;
 		var cube1, cube2;
@@ -28,17 +26,18 @@
 		{
 			scene = new THREE.Scene();
 
-			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 500);
+			camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 500);
 			camera.position.set(0, 15, 30);
 			camera.lookAt(0, 0, 0);
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
             
             // turn on renderer shadows
             renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+			renderer.shadowMap.type = THREE.PCFShadowMap;
+			
+			document.body.appendChild(renderer.domElement);
 
             // create an ambient light for some basic lighting
 			var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
@@ -47,12 +46,10 @@
             // create a spotlight
             // color, intensity, distance, angle...
             var spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI/12);
-			spotlight.position.set(30, 50, 30);
+			spotlight.position.set(30, 75, 30);
 			
 			// tell the light to cast shadows
 			spotlight.castShadow = true;
-			spotlight.shadow.camera.near = 5;
-			spotlight.shadow.camera.far = 100;
 
             scene.add(spotlight);
 
@@ -61,11 +58,11 @@
 			scene.add(spotlightHelper);
 			
 			// add a shadow helper
-			var shadowHelper = new THREE.CameraHelper(spotlight.shadow.camera);
-			scene.add(shadowHelper);
+			/*var shadowHelper = new THREE.CameraHelper(spotlight.shadow.camera);
+			scene.add(shadowHelper);*/
 			
-			addCubes();
 			addPlane();
+			addCubes();
 
 			controls = new THREE.OrbitControls(camera);
 		}
@@ -91,9 +88,9 @@
 				color: 0xf28b4b,
 				specular: 0xffffff,
 				shininess: 20,
-				morphTargets: true,
+				/*morphTargets: true,
 				vertexColors: THREE.FaceColors,
-				flatShading: true
+				flatShading: true*/
 			});
 
 			// create the meshes and position them
@@ -118,11 +115,13 @@
 		function addPlane()
 		{
 			// create the plane geometry
-            var planeGeom = new THREE.PlaneGeometry(50, 50);
+            var planeGeom = new THREE.PlaneGeometry(150, 150);
 
 			// make the basic material
-            var planeMat = new THREE.MeshBasicMaterial({
+            var planeMat = new THREE.MeshPhongMaterial({
 				color: 0xd1cbf2,
+				specular: 0xffffff,
+				shininess: 10,
 				side: THREE.DoubleSide // make sure the plane draws both sides
 			});
 
