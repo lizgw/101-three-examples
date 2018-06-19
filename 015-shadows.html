@@ -11,129 +11,119 @@
 	</style>
 </head>
 <body>
-	<script src="three.js"></script>
-	<script src="OrbitControls.js"></script>
+    <script src="three.js"></script>
+    <script src="OrbitControls.js"></script>
 	<script>
+		
+        var scene, camera, renderer;
+        var cube1;
+        var controls;
 
-		var scene, camera, renderer;
-		var controls;
-		var cube1, cube2;
+        init();
+        animate();
 
-		init();
-		animate();
+        function init()
+        {
+            scene = new THREE.Scene();
 
-		function init()
-		{
-			scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 500);
+            camera.position.set(0, 15, 30);
+            camera.lookAt(0, 0, 0);
 
-			camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 500);
-			camera.position.set(0, 15, 30);
-			camera.lookAt(0, 0, 0);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
 
-			renderer = new THREE.WebGLRenderer();
-			renderer.setSize(window.innerWidth, window.innerHeight);
-            
-            // turn on renderer shadows
+            // enable shadows on renderer
             renderer.shadowMap.enabled = true;
-			renderer.shadowMap.type = THREE.PCFShadowMap;
-			
-			document.body.appendChild(renderer.domElement);
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap; // make the shadows softer
 
-            // create an ambient light for some basic lighting
-			var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
-			scene.add(ambientLight);
+            document.body.appendChild(renderer.domElement);
 
-            // create a spotlight
-            // color, intensity, distance, angle...
-            var spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI/12);
-			spotlight.position.set(30, 75, 30);
-			
-			// tell the light to cast shadows
-			spotlight.castShadow = true;
+            addLights();
+            addPlane();
+            addCubes();
 
-            scene.add(spotlight);
+            controls = new THREE.OrbitControls(camera);
+        }
 
-            // add the helper
-            var spotlightHelper = new THREE.SpotLightHelper(spotlight);
-			scene.add(spotlightHelper);
-			
-			// add a shadow helper
-			/*var shadowHelper = new THREE.CameraHelper(spotlight.shadow.camera);
-			scene.add(shadowHelper);*/
-			
-			addPlane();
-			addCubes();
+        function animate()
+        {
+            requestAnimationFrame(animate);
 
-			controls = new THREE.OrbitControls(camera);
-		}
+            cube1.rotateX(0.01);
+            cube1.rotateY(0.01);
 
-		function animate()
-		{
-			requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
 
-			cube1.rotateX(0.05);
-			cube2.rotateY(0.05);
+        function addCubes()
+        {
+            // create the cube
+            var cube1Geom = new THREE.BoxGeometry(5, 5, 5);
 
-			renderer.render(scene, camera);
-		}
+            // has to be a phong material to cast/receive shadows
+            var material = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 10
+            });
 
-		function addCubes()
-		{
-			// create the cube geometry
-			var cube1Geom = new THREE.BoxGeometry(6, 6, 6);
-			var cube2Geom = new THREE.BoxGeometry(3, 3, 3);
+            // create and position the cube
+            cube1 = new THREE.Mesh(cube1Geom, material);
+            cube1.position.set(0, 10, 0);
 
-			// create a Phong material
-			var material = new THREE.MeshPhongMaterial({
-				color: 0xf28b4b,
-				specular: 0xffffff,
-				shininess: 20,
-				/*morphTargets: true,
-				vertexColors: THREE.FaceColors,
-				flatShading: true*/
-			});
-
-			// create the meshes and position them
-			cube1 = new THREE.Mesh(cube1Geom, material);
-			cube1.position.set(-10, 5, 0);
-			cube1.rotation.x = 0.5;
-			cube1.rotation.y = 0.5;
-
-			cube2 = new THREE.Mesh(cube2Geom, material);
-			cube2.position.set(10, 5, 0);
-			cube2.rotation.x = 0.25;
-            cube2.rotation.y = 0.25;
-            
-            // tell the cubes to cast shadows
+            // tell the cube to cast shadows
             cube1.castShadow = true;
-            cube2.castShadow = true;
 
             scene.add(cube1);
-            scene.add(cube2);
-		}
+        }
 
-		function addPlane()
-		{
-			// create the plane geometry
-            var planeGeom = new THREE.PlaneGeometry(150, 150);
+        function addPlane()
+        {
+            var geom = new THREE.PlaneGeometry(50, 50);
 
-			// make the basic material
-            var planeMat = new THREE.MeshPhongMaterial({
-				color: 0xd1cbf2,
-				specular: 0xffffff,
-				shininess: 10,
-				side: THREE.DoubleSide // make sure the plane draws both sides
-			});
+            // has to be a phong material to cast/receive shadows
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 10,
+                side: THREE.DoubleSide
+            });
 
-			// create, transform, and add the plane mesh
-            var plane = new THREE.Mesh(planeGeom, planeMat);
+            // create and position the plane
+            var plane = new THREE.Mesh(geom, mat);
             plane.rotation.x = Math.PI/2;
 
-            // tell the plane to recieve shadows
+            // tell the plane to receive shadow
             plane.receiveShadow = true;
 
             scene.add(plane);
-		}
+        }
+
+        function addLights()
+        {
+            // add some basic ambient light
+            var ambLight = new THREE.AmbientLight(0xffffff, 0.25);
+            scene.add(ambLight);
+
+            // add a spotlight
+            var spotlight = new THREE.SpotLight(0xffffff);
+            spotlight.position.set(50, 50, 50);
+
+            // tell the light to cast shadows
+            spotlight.castShadow = true;
+
+            // make shadow map bigger for higher quality shadows
+            // 4096 gives a nice, crisp shadow but takes more processing power, so 2048 is fine
+            spotlight.shadow.mapSize.width = 2048;
+            spotlight.shadow.mapSize.height = 2048;
+
+            scene.add(spotlight);
+
+            // add the spotlight helper
+            var spotlightHelper = new THREE.SpotLightHelper(spotlight);
+            scene.add(spotlightHelper);
+        }
 
 	</script>
 </body>
