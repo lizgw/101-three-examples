@@ -35,29 +35,16 @@
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
+
+			// set up the renderer for shadows
+			renderer.shadowMap.enabled = true;
+			renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 			document.body.appendChild(renderer.domElement);
 
-            // create an ambient light for some basic lighting
-			var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
-			scene.add(ambientLight);
-
-            // add a directional light: normally used to simulate daylight
-            // color, intensity
-            var dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            scene.add(dirLight);
-
-            // create an object to act as the target for the light
-            lightTarget = new THREE.Object3D();
-            scene.add(lightTarget);
-            dirLight.target = lightTarget;
-            lightSpeed = 0.025;
-
-            // directional light helper for debug
-            var dirLightHelper = new THREE.DirectionalLightHelper(dirLight);
-            scene.add(dirLightHelper);
-
+            addLights();
+			addPlane();
 			addCubes();
-            addPlane();
 
 			// add controls
 			controls = new THREE.OrbitControls(camera);
@@ -67,15 +54,38 @@
 		{
 			requestAnimationFrame(animate);
 
-			cube1.rotateX(0.05);
-			cube2.rotateY(0.05);
-
-            // move the light target back and forth
-            lightTarget.translateX(lightSpeed);
-            if (lightTarget.position.x <= -2.5 || lightTarget.position.x >= 2.5)
-                lightSpeed *= -1;
+			cube1.rotateX(0.01);
+			cube2.rotateY(0.01);
 
 			renderer.render(scene, camera);
+		}
+
+		function addLights()
+		{
+			// create an ambient light for some basic lighting
+			var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+			scene.add(ambientLight);
+
+            // add a directional light: normally used to simulate daylight
+            // color, intensity
+            var dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+			dirLight.position.set(50, 10, 0);
+
+			// tell it to cast shadows
+			dirLight.castShadow = true;
+
+            scene.add(dirLight);
+
+            // create an object to act as the target for the light
+            lightTarget = new THREE.Object3D();
+			lightTarget.position.set(0, 5, 0);
+            scene.add(lightTarget);
+            dirLight.target = lightTarget;
+            lightSpeed = 0.025;
+
+            // directional light helper for debug
+            var dirLightHelper = new THREE.DirectionalLightHelper(dirLight);
+            scene.add(dirLightHelper);
 		}
 
 		function addCubes()
@@ -98,12 +108,19 @@
 			cube1.position.set(-10, 5, 0);
 			cube1.rotation.x = 0.5;
 			cube1.rotation.y = 0.5;
-			scene.add(cube1);
 
 			cube2 = new THREE.Mesh(cube2Geom, material);
 			cube2.position.set(10, 5, 0);
 			cube2.rotation.x = 0.25;
 			cube2.rotation.y = 0.25;
+
+			// tell the cubes to cast AND receive shadows
+			cube1.castShadow = true;
+			cube1.receiveShadow = true;
+			cube2.castShadow = true;
+			cube2.receiveShadow = true;
+
+			scene.add(cube1);
 			scene.add(cube2);
 		}
 
@@ -114,16 +131,17 @@
             var planeMat = new THREE.MeshPhongMaterial({
 				color: 0xd1cbf2,
                 specular: 0xffffff,
-				shininess: 20,
-				morphTargets: true,
-				vertexColors: THREE.FaceColors,
-				flatShading: true,
+				shininess: 5,
 				side: THREE.DoubleSide // make sure the plane draws both sides
 			});
 
 			// create, transform, and add the plane mesh
             var plane = new THREE.Mesh(planeGeom, planeMat);
             plane.rotation.x = Math.PI/2;
+
+			// tell the plane to receive shadows
+			plane.receiveShadow = true;
+
             scene.add(plane);
 		}
 
