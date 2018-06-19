@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>017 - more shapes</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+    <script src="three.js"></script>
+    <script src="OrbitControls.js"></script>
+	<script>
+		
+        var scene, camera, renderer;
+        var controls;
+
+        init();
+        animate();
+
+        function init()
+        {
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 5, 500);
+            camera.position.set(0, 15, 30);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            addLights();
+            addShapes();
+            addPlane();
+
+            controls = new THREE.OrbitControls(camera);
+        }
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+
+            renderer.render(scene, camera);
+        }
+
+        function addLights()
+        {
+            var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+            scene.add(ambientLight);
+
+            var light = new THREE.PointLight(0xffffff, 1);
+            light.position.set(25, 25, 25);
+            light.lookAt(0, 0, 0);
+            scene.add(light);
+        }
+
+        function addShapes()
+        {
+            // create the base material
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 15
+            });
+
+            // cone: radius, height, radialSegments
+            var coneGeom = new THREE.ConeGeometry(5, 8, 12);
+            var cone = new THREE.Mesh(coneGeom, mat);
+            cone.position.set(-15, 10, 0);
+            scene.add(cone);
+
+            // cylinder: radiusTop, radiusBottom, height, radialSegments
+            var cylinderGeom = new THREE.CylinderGeometry(5, 5, 8, 12);
+            var cylinder = new THREE.Mesh(cylinderGeom, mat);
+            cylinder.position.set(-15, 10, -15);
+            scene.add(cylinder);
+
+            // dodecahedron: radius, detail
+            var dodecahedronGeom = new THREE.DodecahedronGeometry(5, 0);
+            var dodecahedron = new THREE.Mesh(dodecahedronGeom, mat);
+            dodecahedron.position.set(-15, 10, 15);
+            scene.add(dodecahedron);
+
+            // icosahedron: raduis, detail
+            var isoGeom = new THREE.IcosahedronGeometry(5, 0);
+            var iso = new THREE.Mesh(isoGeom, mat);
+            iso.position.set(0, 10, -15);
+            scene.add(iso);
+
+            // octahedron: radius, detail
+            var octGeom = new THREE.OctahedronGeometry(5, 0);
+            var oct = new THREE.Mesh(octGeom, mat);
+            oct.position.set(0, 10, 0);
+            scene.add(oct);
+
+            // sphere: radius, widthSegments, heightSegments
+            var sphereGeom = new THREE.SphereGeometry(5, 32, 32);
+            var sphere = new THREE.Mesh(sphereGeom, mat);
+            sphere.position.set(0, 10, 15);
+            scene.add(sphere);
+
+            // tetrahedron: raduis, detail
+            var tetraGeom = new THREE.TetrahedronGeometry(5, 0);
+            var tetra = new THREE.Mesh(tetraGeom, mat);
+            tetra.position.set(15, 10, -15);
+            scene.add(tetra);
+
+            // torus: radius, tube, radialSegments, tubeSegments
+            var torusGeom = new THREE.TorusGeometry(5, 3, 16, 16);
+            var torus = new THREE.Mesh(torusGeom, mat);
+            torus.position.set(15, 10, 0);
+            scene.add(torus);
+
+            // torus knot: radius, tube, radialSegments, tubeSegments
+            var torusKnotGeom = new THREE.TorusKnotGeometry(5, 1, 64, 32);
+            var torusKnot = new THREE.Mesh(torusKnotGeom, mat);
+            torusKnot.position.set(15, 10, 15);
+            scene.add(torusKnot);
+        }
+
+        function addPlane()
+        {
+            var geom = new THREE.PlaneGeometry(50, 50);
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 5,
+                side: THREE.DoubleSide
+            });
+            var plane = new THREE.Mesh(geom, mat);
+            plane.rotation.x = Math.PI/2;
+            scene.add(plane);
+        }
+
+	</script>
+</body>
+</html>
