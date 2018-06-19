@@ -32,6 +32,11 @@
 
             renderer = new THREE.WebGLRenderer();
             renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // enable shadows on renderer
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
             document.body.appendChild(renderer.domElement);
 
             addLights();
@@ -63,6 +68,9 @@
             cube1 = new THREE.Mesh(cube1Geom, material);
             cube1.position.set(0, 10, 0);
 
+            // tell the cube to cast shadows
+            cube1.castShadow = true;
+
             scene.add(cube1);
         }
 
@@ -77,6 +85,10 @@
             });
             var plane = new THREE.Mesh(geom, mat);
             plane.rotation.x = Math.PI/2;
+
+            // tell the plane to recieve shadow
+            plane.receiveShadow = true;
+
             scene.add(plane);
         }
 
@@ -89,6 +101,10 @@
             // add a spotlight
             var spotlight = new THREE.SpotLight(0xffffff);
             spotlight.position.set(50, 50, 50);
+
+            // tell the light to cast shadows
+            spotlight.castShadow = true;
+
             scene.add(spotlight);
 
             // add the spotlight helper
