@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>018 - live resize</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+	</style>
+</head>
+<body>
+    <script src="three.js"></script>
+    <script src="OrbitControls.js"></script>
+	<script>
+		
+        var scene, camera, renderer;
+
+        init();
+        animate();
+
+        function init()
+        {
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 5, 500);
+            camera.position.set(0, 15, 30);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            addObjects();
+            addLights();
+            addPlane();
+
+            controls = new THREE.OrbitControls(camera);
+
+            window.addEventListener("resize", onWindowResize, false);
+        }
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+
+            renderer.render(scene, camera);
+        }
+
+        function addObjects()
+        {
+            var mat = new THREE.MeshBasicMaterial({color: 0xffffff});
+            var geom = new THREE.OctahedronGeometry(5, 0);
+            var mesh = new THREE.Mesh(geom, mat);
+            mesh.position.set(0, 5, 0);
+            scene.add(mesh);
+        }
+
+        function addLights()
+        {
+            var ambient = new THREE.AmbientLight(0xffffff, 0.25);
+            scene.add(ambient);
+        }
+
+        function addPlane()
+        {
+            var mat = new THREE.MeshBasicMaterial({color: 0xffaaff});
+            var geom = new THREE.PlaneGeometry(25, 25);
+            var mesh = new THREE.Mesh(geom, mat)
+        }
+
+        // from https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_hemisphere.html#L229
+        function onWindowResize()
+        {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+	</script>
+</body>
+</html>
