@@ -50,7 +50,11 @@
 
         function addObjects()
         {
-            var mat = new THREE.MeshBasicMaterial({color: 0xffffff});
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 5
+            });
             var geom = new THREE.OctahedronGeometry(5, 0);
             var mesh = new THREE.Mesh(geom, mat);
             mesh.position.set(0, 5, 0);
@@ -61,13 +65,24 @@
         {
             var ambient = new THREE.AmbientLight(0xffffff, 0.25);
             scene.add(ambient);
+
+            var spotlight = new THREE.SpotLight(0xffffff, 0.75);
+            spotlight.position.set(30, 30, 30);
+            scene.add(spotlight);
         }
 
         function addPlane()
         {
-            var mat = new THREE.MeshBasicMaterial({color: 0xffaaff});
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffaaff,
+                specular: 0xffffff,
+                shininess: 10,
+                side: THREE.DoubleSide
+            });
             var geom = new THREE.PlaneGeometry(25, 25);
-            var mesh = new THREE.Mesh(geom, mat)
+            var mesh = new THREE.Mesh(geom, mat);
+            mesh.rotation.x = Math.PI/2;
+            scene.add(mesh);
         }
 
         // from https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_hemisphere.html#L229
