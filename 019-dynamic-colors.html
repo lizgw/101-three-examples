@@ -16,6 +16,10 @@
 	<script>
 		
         var scene, camera, renderer;
+        var decMesh;
+        var changeR = 1/255;
+        var changeG = 1/255;
+        var changeB = 1/255;
 
         init();
         animate();
@@ -45,6 +49,8 @@
         {
             requestAnimationFrame(animate);
 
+            changeColor("g");
+
             renderer.render(scene, camera);
         }
 
@@ -64,14 +70,9 @@
                 shininess: 5
             });
 
-            var octGeom = new THREE.OctahedronGeometry(5, 0);
-            var octMesh = new THREE.Mesh(octGeom, mat);
-            octMesh.position.set(5, 5, 5);
-            scene.add(octMesh);
-
             var decGeom = new THREE.DodecahedronGeometry(5, 0);
-            var decMesh = new THREE.Mesh(decGeom, mat);
-            decMesh.position.set(-5, 5, -5);
+            decMesh = new THREE.Mesh(decGeom, mat);
+            decMesh.position.set(0, 5, 0);
             scene.add(decMesh);
         }
 
@@ -97,6 +98,44 @@
             var spotlight = new THREE.SpotLight(0xffffff, 0.75);
             spotlight.position.set(30, 30, 30);
             scene.add(spotlight);
+        }
+
+        function changeColor(colorToChange)
+        {
+            // RGB values are from 0 to 1, not 0 to 255 here!
+
+            // get the initial colors of the material
+            var red = decMesh.material.color.r;
+            var green = decMesh.material.color.g;
+            var blue = decMesh.material.color.b;
+
+            // if the color value is at its upper or lower limit,
+            // invert the color counter and start moving the other way
+            if (red <= 0 || red >= 1)
+                changeR *= -1;
+            else if (green <= 0 || green >= 1)
+                changeG *= -1;
+            else if (blue <= 0 || blue >= 1)
+                changeB *= -1;
+
+            // change the one we want
+            switch(colorToChange)
+            {
+                case "r":
+                    red += changeR;
+                    break;
+                case "g":
+                    green += changeG;
+                    break;
+                case "b":
+                    blue += changeB;
+                    break;
+            }
+            
+            // update the material with the new color
+            decMesh.material.color.setRGB(red, green, blue);
+
+            console.log(decMesh.material.color.getStyle());
         }
 
 	</script>
