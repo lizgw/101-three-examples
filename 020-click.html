@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>020 - click</title>
+
+	<style>
+		body { margin: 0; }
+		canvas { width: 100%; height: 100%; }
+        .info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+        }
+	</style>
+</head>
+<body>
+    <div class="info">
+        <p>Click the screen or button to toggle rotation.</p>
+        <button id="toggleRotBtn">Toggle Rotation</button>
+    </div>
+    <script src="three.js"></script>
+    <script src="OrbitControls.js"></script>
+	<script>
+
+        // setup actions for the button
+        document.getElementById("toggleRotBtn").addEventListener("click", onClick, false);        
+		
+        var scene, camera, renderer;
+        var spinning = true;
+        var decMesh;
+
+        var timeDown, timeUp;
+
+        init();
+        animate();
+
+        function init()
+        {
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 5, 500);
+            camera.position.set(0, 15, 30);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            addObjects();
+            addPlane();
+            addLights();
+
+            controls = new THREE.OrbitControls(camera);
+
+            // add event listeners to the canvas
+            renderer.domElement.addEventListener("click", onClick, false);
+
+            renderer.domElement.addEventListener("mousedown", function() {
+                timeDown = Date.now();
+            }, false);
+
+            renderer.domElement.addEventListener("mouseup", function(){
+                timeUp = Date.now();
+            }, false);
+        }
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+
+            if (spinning)
+            {
+                decMesh.rotateX(0.005);
+                decMesh.rotateZ(0.005);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function addObjects()
+        {
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 30
+            });
+
+            var decGeom = new THREE.DodecahedronGeometry(5, 0);
+            decMesh = new THREE.Mesh(decGeom, mat);
+            decMesh.position.set(0, 5, 0);
+            scene.add(decMesh);
+        }
+
+        function addPlane()
+        {
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 0,
+                side: THREE.DoubleSide
+            });
+
+            var geom = new THREE.PlaneGeometry(25, 25);
+            var plane = new THREE.Mesh(geom, mat);
+            plane.rotation.x = Math.PI/2;
+            scene.add(plane);
+        }
+
+        function addLights()
+        {
+            var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+            scene.add(ambientLight);
+
+            var spotlight = new THREE.SpotLight(0xffffff, 0.75);
+            spotlight.position.set(0, 30, 30);
+            scene.add(spotlight);
+        }
+
+        function onClick(event)
+        {
+            var timeDiff = timeUp - timeDown;
+            var clickSource = event.target.tagName;
+
+            if (clickSource == "BUTTON" || clickSource == "CANVAS" && timeDiff < 100)
+                spinning = !spinning; //switch between true and false
+        }
+
+	</script>
+</body>
+</html>
