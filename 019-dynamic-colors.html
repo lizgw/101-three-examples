@@ -49,6 +49,7 @@
         {
             requestAnimationFrame(animate);
 
+            changeColor("b");
             changeColor("g");
 
             renderer.render(scene, camera);
@@ -111,11 +112,11 @@
 
             // if the color value is at its upper or lower limit,
             // invert the color counter and start moving the other way
-            if (red <= 0 || red >= 1)
+            if (colorToChange == "r" && (red <= 0 || red >= 1))
                 changeR *= -1;
-            else if (green <= 0 || green >= 1)
+            else if (colorToChange == "g" && (green <= 0 || green >= 1))
                 changeG *= -1;
-            else if (blue <= 0 || blue >= 1)
+            else if (colorToChange == "b" && (blue <= 0 || blue >= 1))
                 changeB *= -1;
 
             // change the one we want
@@ -135,7 +136,7 @@
             // update the material with the new color
             decMesh.material.color.setRGB(red, green, blue);
 
-            console.log(decMesh.material.color.getStyle());
+            //console.log(decMesh.material.color.getStyle());
         }
 
 	</script>
