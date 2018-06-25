@@ -65,16 +65,27 @@
 
         function addObjects()
         {
-            var mat = new THREE.MeshPhongMaterial({
+            var mat1 = new THREE.MeshPhongMaterial({
                 color: 0xffffff,
                 specular: 0xffffff,
                 shininess: 5
             });
 
+            var mat2 = new THREE.MeshPhongMaterial({
+                color: 0xff0000,
+                specular: 0xffffff,
+                shininess: 5
+            });
+
             var decGeom = new THREE.DodecahedronGeometry(5, 0);
-            decMesh = new THREE.Mesh(decGeom, mat);
-            decMesh.position.set(0, 5, 0);
+            decMesh = new THREE.Mesh(decGeom, mat1);
+            decMesh.position.set(5, 5, 5);
             scene.add(decMesh);
+
+            var decGeom2 = new THREE.DodecahedronGeometry(5, 0);
+            var decMesh2 = new THREE.Mesh(decGeom, mat2);
+            decMesh2.position.set(-5, 5, -5);
+            scene.add(decMesh2);
         }
 
         function addPlane()
