@@ -1,7 +1,26 @@
 // list out all the html file names to be included
 var demoNames = [
     "001-cube",
-    "002-lines"
+    "002-lines",
+    "003-rotating-lines",
+    "004-dashed-lines",
+    "005-text-overlay",
+    "006-organization",
+    "007-procedural-text",
+    "008-movement",
+    "009-orbit",
+    "010-plane",
+    "011-light01-ambient",
+    "012-light02-hemi",
+    "013-light03-point",
+    "014-light04-spot",
+    "015-shadows",
+    "016-light05-directional",
+    "017-more-shapes",
+    "018-live-resize",
+    "019-dynamic-colors",
+    "020-click",
+    "021-renderer"
 ]
 
 var demoList = document.getElementById("demo-list");
