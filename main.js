@@ -76,7 +76,7 @@ function aboutLinkPressed(event) {
     demoFrame.setAttribute("src", "about.html");
     
     // reset the title
-    demoTitle.innerText = "[no demo selected]";
+    demoTitle.innerText = "[no example selected]";
 }
 
 function viewSourceLinkPressed(event) {
