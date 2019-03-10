@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>three.js demos</title>
+    <link href="main.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1><a href="/">three.js demos</a></h1>
+            <ul class="navlinks">
+                <li><button id="about-link">about</button></li>
+            </ul>
+            <hr>
+            <h2 id="demo-title">[no demo selected]</h2>
+            <ul class="navlinks">
+                <li><button id="view-source-link">view source</button></li>
+                <li><button id="new-tab-link">open in new tab</button></li>
+            </ul>
+            <div id="demo-holder">
+                <ul id="demo-list"></ul>
+            </div>
+        </div>
+        <iframe id="demo-iframe" title="demo" src="about:blank">
+            <p>Sorry, your browser doesn't support iframes!</p>
+        </iframe>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
